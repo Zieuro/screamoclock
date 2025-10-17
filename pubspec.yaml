@@ -1,0 +1,53 @@
+name: screamoclock
+description: "scare rotations app"
+publish_to: 'none'
+version: 1.1.0
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  alarm: ^5.0.0
+  flutter_local_notifications: ^19.0.0
+  intl: any
+  logging: ^1.3.0
+  permission_handler: ^11.4.0
+  timezone: ^0.10.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  
+  fonts:
+    - family: Creepster
+      fonts:
+        - asset: assets/Creepster/Creepster-Regular.ttf
+    - family: GoogleSans
+      fonts:
+        - asset: assets/Google_Sans_Code/static/GoogleSansCode-Regular.ttf
+        - asset: assets/Google_Sans_Code/static/GoogleSansCode-Light.ttf
+          weight: 300
+        - asset: assets/Google_Sans_Code/static/GoogleSansCode-Medium.ttf
+          weight: 500
+        - asset: assets/Google_Sans_Code/static/GoogleSansCode-Bold.ttf
+          weight: 700
+        - asset: assets/Google_Sans_Code/static/GoogleSansCode-Italic.ttf
+          style: italic
+        - asset: assets/Google_Sans_Code/static/GoogleSansCode-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/Google_Sans_Code/static/GoogleSansCode-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/Google_Sans_Code/static/GoogleSansCode-BoldItalic.ttf
+          weight: 700
+          style: italic
+  
+  assets:
+    - assets/silence.mp3
