@@ -1,7 +1,7 @@
 name: screamoclock
 description: "scare rotations app"
 publish_to: 'none'
-version: 1.1.0
+version: 1.1.1
 
 environment:
   sdk: ^3.9.2
