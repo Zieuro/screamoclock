@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:alarm/alarm.dart';
-import 'package:screamoclock/services/notifications.dart';
 import 'screens/home.dart';
 
 void main() async {
@@ -9,9 +8,9 @@ void main() async {
   // Initialize the alarm package
   await Alarm.init();
 
-  // Initialize notifications
-  final notifications = Notifications();
-  await notifications.init();
+  // // Initialize notifications
+  // final notifications = Notifications();
+  // await notifications.init();
 
   runApp(const MainApp());
 }

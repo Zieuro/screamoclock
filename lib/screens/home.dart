@@ -37,33 +37,25 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _requestPermissionsOnStartup();
-    now = DateTime.now();
+    _safeInit();
+  }
 
-    calltime = DateTime(now.year, now.month, now.day, 18, 0);
-    starttime = DateTime(now.year, now.month, now.day, 19, 0);
-
-    // next-day midnight and 1:00 AM
-    final nextMidnight = DateTime(
-      now.year,
-      now.month,
-      now.day,
-    ).add(const Duration(days: 1));
-    final next1am = DateTime(
-      nextMidnight.year,
-      nextMidnight.month,
-      nextMidnight.day,
-      1,
-      0,
-    );
-
-    final weekday = now.weekday; // 1 = Monday, 7 = Sunday
-    if (weekday == DateTime.thursday || weekday == DateTime.sunday) {
-      endtime = nextMidnight;
-    } else if (weekday == DateTime.friday || weekday == DateTime.saturday) {
-      endtime = next1am;
-    } else {
-      endtime = now; // no event today
+  Future<void> _safeInit() async {
+    try {
+      // Only request permissions if not already granted
+      final allGranted = await AlarmPermissions.areAllPermissionsGranted();
+      if (!allGranted) {
+        await _requestPermissionsOnStartup();
+      }
+    } catch (e) {
+      print('Error checking permissions: $e');
+    }
+    
+    
+    try {
+      _updateDateTimes();
+    } catch (e) {
+      print('Error updating date times: $e');
     }
 
     // Listen for alarm events
@@ -85,6 +77,65 @@ class _HomePageState extends State<HomePage> {
         now = DateTime.now();
       });
     });
+  }
+
+  void _updateDateTimes() {
+    now = DateTime.now();
+
+    calltime = DateTime(now.year, now.month, now.day, 18, 0);
+    starttime = DateTime(now.year, now.month, now.day, 19, 0);
+
+    // next-day midnight and 1:00 AM
+    final nextMidnight = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).add(const Duration(days: 1));
+    final next1am = DateTime(
+      nextMidnight.year,
+      nextMidnight.month,
+      nextMidnight.day,
+      1,
+      0,
+    );
+
+    // Handle early morning hours (0-2 AM) - use previous day's logic
+    if (now.hour >= 0 && now.hour < 3) {
+      final yesterday = now.subtract(const Duration(days: 1));
+      final yesterdayWeekday = yesterday.weekday;
+
+      if (yesterdayWeekday == DateTime.thursday ||
+          yesterdayWeekday == DateTime.sunday) {
+        endtime = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          0,
+          0,
+        ); // End at midnight
+      } else if (yesterdayWeekday == DateTime.friday ||
+          yesterdayWeekday == DateTime.saturday) {
+        endtime = DateTime(now.year, now.month, now.day, 1, 0); // End at 1 AM
+      } else {
+        endtime = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          0,
+          0,
+        ); // End at midnight for non-event days
+      }
+    } else {
+      // Normal hours (3 AM - 11:59 PM)
+      final weekday = now.weekday; // 1 = Monday, 7 = Sunday
+      if (weekday == DateTime.thursday || weekday == DateTime.sunday) {
+        endtime = nextMidnight;
+      } else if (weekday == DateTime.friday || weekday == DateTime.saturday) {
+        endtime = next1am;
+      } else {
+        endtime = now; // no event today
+      }
+    }
   }
 
   Future<void> _requestPermissionsOnStartup() async {
@@ -153,6 +204,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     timer.cancel();
+    alarmSubscription.cancel();
     super.dispose();
   }
 

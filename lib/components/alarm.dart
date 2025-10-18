@@ -69,10 +69,12 @@ Future<void> armAlarms(
           mealLine,
         ].where((line) => line != null).join(' ');
 
+        final alarmID = now.month + now.day + id;
+
         // Alarm Settings
 
         final alarmSettings = AlarmSettings(
-          id: id,
+          id: alarmID,
           dateTime: s.start,
           assetAudioPath: 'assets/silence.mp3',
           loopAudio: true,
