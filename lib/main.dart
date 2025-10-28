@@ -8,10 +8,6 @@ void main() async {
   // Initialize the alarm package
   await Alarm.init();
 
-  // // Initialize notifications
-  // final notifications = Notifications();
-  // await notifications.init();
-
   runApp(const MainApp());
 }
 

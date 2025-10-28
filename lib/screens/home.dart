@@ -11,6 +11,7 @@ import 'package:screamoclock/components/alarm.dart';
 import 'package:alarm/alarm.dart';
 import 'package:alarm/utils/alarm_set.dart';
 import 'package:screamoclock/services/permissions.dart';
+import 'package:screamoclock/services/notifications.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -50,8 +51,7 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       print('Error checking permissions: $e');
     }
-    
-    
+
     try {
       _updateDateTimes();
     } catch (e) {
@@ -77,6 +77,14 @@ class _HomePageState extends State<HomePage> {
         now = DateTime.now();
       });
     });
+
+    // Initialize notifications
+    try {
+      final notifications = Notifications();
+      await notifications.init();
+    } on Exception catch (e) {
+      print('Error initializing notifications: $e');
+    }
   }
 
   void _updateDateTimes() {
